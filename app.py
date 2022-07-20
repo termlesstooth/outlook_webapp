@@ -5,6 +5,14 @@ from flask_session import Session  # https://pythonhosted.org/Flask-Session
 import msal
 import app_config
 
+#print(app_config.ENDPOINT)
+#GRAPH_API_ENDPOINT = 'https://graph.microsoft.com/v1.0'
+#def download_emails(message_id):
+#    try:
+#        response = requests.get(GRAPH_API_ENDPOINT + '/me/messages')
+#    except Exception as e:
+#        print(e)
+#        return False
 
 app = Flask(__name__)
 app.config.from_object(app_config)
@@ -62,6 +70,19 @@ def graphcall():
         ).json()
     return render_template('display.html', result=graph_data)
 
+@app.route("/getemail")
+def getemail():
+    # get access token
+    token = _get_token_from_cache(app_config.SCOPE)
+    if not token:
+        return redirect(url_for("login"))
+    graph_data = requests.get(
+        app_config.ENDPOINT,
+        headers={'Authorization': 'Bearer ' + token['access_token']},
+        ).json()
+    print(headers)
+
+# TODO: Add a health check
 
 def _load_cache():
     cache = msal.SerializableTokenCache()
@@ -94,6 +115,25 @@ def _get_token_from_cache(scope=None):
 
 app.jinja_env.globals.update(_build_auth_code_flow=_build_auth_code_flow)  # Used in template
 
+# Step 1: Get the access token
+#access_token = generate_access_token()
+
+# Retrieve emails
+#print("Retrieving Emails")
+#params = {
+#    'top': 3, # max is 1000 messages per request. TODO: Remove this it's just for testing. 
+#    'select': 'from,subject,hasAttachments',
+#    'count': 'true'
+# }
+#response = requests.get(app_config.GRAPH_API_ENDPOINT + '/me/messages', )
+#if response.status_code != 200:
+#    raise Exception(response.json())
+
+#response_json = response.json()
+#response_json.keys()
+
+#emails = response_json['value']
+#len(emails)
+
 if __name__ == "__main__":
     app.run()
-
