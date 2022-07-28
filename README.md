@@ -1,3 +1,5 @@
+Tutorial Followed from:
+https://docs.microsoft.com/en-us/azure/active-directory/develop/web-app-quickstart?pivots=devlang-python
 ---
 page_type: sample
 languages:

@@ -70,17 +70,17 @@ def graphcall():
         ).json()
     return render_template('display.html', result=graph_data)
 
-@app.route("/getemail")
-def getemail():
-    # get access token
-    token = _get_token_from_cache(app_config.SCOPE)
-    if not token:
-        return redirect(url_for("login"))
-    graph_data = requests.get(
-        app_config.ENDPOINT,
-        headers={'Authorization': 'Bearer ' + token['access_token']},
-        ).json()
-    print(headers)
+#@app.route("/getemail")
+#def getemail():
+#    # get access token
+#    token = _get_token_from_cache(app_config.SCOPE)
+#    if not token:
+#        return redirect(url_for("login"))
+#    graph_data = requests.get(
+#        app_config.ENDPOINT,
+#        headers={'Authorization': 'Bearer ' + token['access_token']},
+#        ).json()
+#    print(headers)
 
 # TODO: Add a health check
 
@@ -97,7 +97,7 @@ def _save_cache(cache):
 def _build_msal_app(cache=None, authority=None):
     return msal.ConfidentialClientApplication(
         app_config.CLIENT_ID, authority=authority or app_config.AUTHORITY,
-        client_credential=app_config.CLIENT_SECRET, token_cache=cache)
+        client_credential=app_config.CLIENT_SECRET, token_cache=cache) 
 
 def _build_auth_code_flow(authority=None, scopes=None):
     return _build_msal_app(authority=authority).initiate_auth_code_flow(
@@ -136,4 +136,4 @@ app.jinja_env.globals.update(_build_auth_code_flow=_build_auth_code_flow)  # Use
 #len(emails)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="localhost")
